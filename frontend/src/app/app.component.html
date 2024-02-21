@@ -1,0 +1,153 @@
+<link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css" rel="stylesheet">
+
+<header class="navbar navbar-expand-lg navbar-inverse bg-inverse navbar-dark bg-dark">
+    <div class="container">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <a class="navbar-brand  " style="color: white;"><i class="fa fa-camera-retro"></i> Movie Manager</a>
+    <!-- Menu -->
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+        <ul class="navbar-nav mr-auto ">
+          <li class="nav-item active">
+            <a class="nav-link" type="button" style="font-size: large " (click)="onOpenModal(null,'add')"> Add Movie<span class="sr-only">(current)</span></a>
+          </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-2">
+          <input class="form-control mr-sm-2" type="search" (ngModelChange)="searchMovie(key.value)" #key="ngModel" ngModel name="key" placeholder="Search...">
+        </form>
+        
+    </div>
+  </div>
+</header>
+<main class="container" id="main-container">
+<section class="movies" id="movies">
+    <h2 >All Movies</h2>
+	<div  class="row">
+		<div *ngFor="let movie of movies" class="col-lg-3 col-md-4 card-group">
+			<div class="card bg-light">
+        <h6 class="card-title card-header">{{movie?.title}} ({{movie?.premiere}})</h6>
+        <div class="card-img" >
+          <img src="{{movie?.imageUrl}}" alt="Movie" class="w-100" />
+        </div>
+        <div class="card-body">
+          <p class="card-text ">{{movie?.description}}</p>
+        </div>
+        <div class="card-footer">
+          <p>{{movie?.genre}}</p>
+        </div>
+        <div class="btn-group btn-block">
+          <a (click)="onOpenModal(movie,'edit')" class="btn btn-primary btn-sm btn-" data-placement="top" data-original-title="Edit"><i class="fa fa-pencil" style="color: white;"> Edit</i></a>
+          <a (click)="onOpenModal(movie,'delete')" class="btn btn-secondary btn-sm " data-placement="top" data-original-title="Delete"><i class="fa fa-times-circle" style="color: white;"> Delete</i></a>
+        </div>
+			</div>
+		</div>
+	</div>
+</section>        
+</main>
+
+ <!-- ADD MODAL -->
+ <div class="modal fade" id="addMovieModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+      <h3 class="modal-title" id="addMovieModalLabel">Add Movie</h3>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		</div>
+		<div class="modal-body">      
+			<form #addForm="ngForm" (ngSubmit)="onAddMovie(addForm)">
+              <div class="form-group">
+                <label for="exampleInputTitle">Title</label>
+                <input type="text" ngModel name="title" class="form-control" id="title" required>
+              </div>
+              <div class="form-group">
+                <label for="exampleInputDescription">Description (max 190 chars)</label>
+                <input type="text" ngModel name="description" class="form-control" id="description" required>
+              </div>
+              <div class="form-group">
+                <label for="exampleInputGenre">Genre</label>
+                <input type="text" ngModel name="genre" class="form-control" id="genre" required>
+              </div>
+              <div class="form-group">
+                <label for="exampleInputPremiere">Premiere (year)</label>
+                <input type="text" ngModel name="premiere" class="form-control" id="premiere" required maxlength="190">
+              </div>
+              <div class="form-group">
+                <label for="exampleInputImageUrl">ImageUrl</label>
+                <input type="text" ngModel name="imageUrl" class="form-control" id="imageUrl" required>
+              </div>
+              <div class="modal-footer">
+                <button type="button" id="add-movie-form" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button [disabled]="addForm.invalid" type="submit" class="btn btn-primary">Save</button>
+              </div>
+            </form>
+		    </div>
+	    </div>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal fade" id="editMovieModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+      <h3 class="modal-title" id="lineModalLabel">Edit movie {{editMovie?.title}}</h3>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		</div>
+		<div class="modal-body">
+			
+      <form #editForm="ngForm">
+            <div class="form-group">
+              <label for="exampleInputTitle">Title</label>
+              <input type="text" ngModel="{{editMovie?.title}}" name="title" class="form-control" id="title" required>
+            </div>
+            <input type="hidden" ngModel="{{editMovie?.id}}" name="id" class="form-control" id="id">
+            <input type="hidden" ngModel="{{editMovie?.movieCode}}" name="movieCode" class="form-control" id="movieCode">
+            <div class="form-group">
+              <label for="exampleInputDescription">Description</label>
+              <input type="text" ngModel="{{editMovie?.description}}" name="description" class="form-control" id="description" required>
+            </div>
+            <div class="form-group">
+              <label for="exampleInputGenre">Genre</label>
+              <input type="text" ngModel="{{editMovie?.genre}}" name="genre" class="form-control" id="genre" required>
+            </div>
+            <div class="form-group">
+              <label for="exampleInputPremiere">Premiere</label>
+              <input type="text" ngModel="{{editMovie?.premiere}}" name="premiere" class="form-control" id="premiere" required>
+            </div>
+            <div class="form-group">
+              <label for="exampleInputImageUrl">ImageUrl</label>
+              <input type="text" ngModel="{{editMovie?.imageUrl}}" name="imageUrl" class="form-control" id="imageUrl" required>
+            </div>
+            <div class="modal-footer">
+              <button type="button" id="" class="btn btn-secondary" data-dismiss="modal" >Close</button>
+              <button (click)="onEditMovie(editForm.value)"  data-dismiss="modal" class="btn btn-primary">Save</button>
+            </div>
+          </form>
+		</div>
+	</div>
+  </div>
+</div>
+
+<!-- DELETE Modal -->
+<div class="modal fade" id="deleteMovieModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+      	<div class="container d-flex pl-0"><img src="https://imgur.com/Kh1gwTq.png"><h5 class="modal-title ml-2" id="exampleModalLabel">Delete the movie?</h5></div>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="text-muted">Are you sure you want to delete movie {{deleteMovie?.title}}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
+        <button (click)="onDeleteMovie(deleteMovie?.id)" (click)="reloadCurrentPage()" class="btn btn-danger" data-dismiss="modal">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
